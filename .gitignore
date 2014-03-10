@@ -8,6 +8,7 @@ web/bundles/*
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
+phpunit.xml
 
 # Composer
 composer.phar
@@ -17,3 +18,6 @@ composer.phar
 
 # Vagrant
 .vagrant/*
+
+# Tests
+cov/*

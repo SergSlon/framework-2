@@ -1,14 +1,14 @@
 <IfModule mod_rewrite.c>
-    Options +FollowSymlinks
+    Options +FollowSymLinks -Indexes -Multiviews
     RewriteEngine On
-
-    # Explicitly disable rewriting for front controllers
-    #RewriteRule ^front_dev.php - [L]
-    RewriteRule ^front.php - [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
 
+    # Explicitly disable rewriting for front controllers
+    RewriteRule ^front.php - [L]
+    #RewriteRule ^front_dev.php - [L]
+
     # Change below before deploying to production
     RewriteRule ^(.*)$ front.php [QSA,L]
-    #RewriteRule ^(.*)$ front_dev.php [QSA,L]
+    # RewriteRule ^(.*)$ front_dev.php [QSA,L]
 </IfModule>
