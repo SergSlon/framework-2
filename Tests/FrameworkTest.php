@@ -17,10 +17,10 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('match')
             ->will($this->returnValue([
-                '_route' => 'foo',
-                'name' => 'Fabien',
+                '_route'      => 'foo',
+                'name'        => 'Fabien',
                 '_controller' => function ($name) {
-                        return new Response('Hello '.$name);
+                        return new Response('Hello ' . $name);
                     }
             ]))
         ;
