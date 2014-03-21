@@ -6,8 +6,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 
-$request = Request::createFromGlobals();
+//$request = Request::createFromGlobals();
+$request = Request::create('/is-leap-year/2012');
 $routes = include __DIR__.'/../src/app.php';
 
 $context = new Routing\RequestContext();
@@ -20,6 +23,7 @@ $dispatcher->addSubscriber(new Simplex\ContentLengthListener());
 $dispatcher->addSubscriber(new Simplex\GoogleListener());
 
 $framework = new Simplex\Framework($dispatcher, $matcher, $resolver);
-$response  = $framework->handle($request);
+$framework = new HttpCache($framework, new Store(__DIR__.'/../cache'));
 
-$response->send();
+//$framework->handle($request)->send();
+echo new Response($framework->handle($request));

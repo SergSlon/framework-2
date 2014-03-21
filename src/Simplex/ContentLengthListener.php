@@ -11,7 +11,7 @@ class ContentLengthListener implements EventSubscriberInterface
         $headers = $response->headers;
 
         if(!$headers->has('Content-Length') && !$headers->has('Transfer-Encoding')) {
-            $headers->set('Content-Lenght', strlen($response->getContent()));
+            $headers->set('Content-Length', strlen($response->getContent()));
         }
     }
 

@@ -5,9 +5,9 @@ vagrantfile-local:
         box_url: 'http://box.puphpet.com/debian-wheezy72-x64-vbox43.box'
         hostname: null
         network:
-            private_network: 10.10.10.11
+            private_network: 11.11.11.11
             forwarded_port:
-                CIbyvPxT5xs0:
+                QSdQZ2LHkxzG:
                     host: '8765'
                     guest: '22'
         provider:
@@ -26,7 +26,7 @@ vagrantfile-local:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            5M0boep83p3J:
+            7jw8K2YuUOSb:
                 id: vagrant-root
                 source: ./
                 target: /var/www/framework/
@@ -57,42 +57,68 @@ mailcatcher:
         smtp_port: 1025
         http_ip: 0.0.0.0
         http_port: '1080'
-        path: /usr/local/bin
-        log: /var/log/mailcatcher/mailcatcher.log
+        mailcatcher_path: /usr/local/bin
+        log_path: /var/log/mailcatcher/mailcatcher.log
 apache:
+    install: '1'
+    settings:
+        user: www-data
+        group: www-data
+        default_vhost: true
+        manage_user: false
+        manage_group: false
+        sendfile: 0
     modules:
         - php
         - rewrite
     vhosts:
-        zwyoDrU55ARD:
+        sEGUSHxDogvX:
             servername: framework.dev
             serveraliases:
                 - www.framework.dev
+                - framework.dev
             docroot: /var/www/framework/web
             port: '80'
             setenv:
                 - 'APP_ENV dev'
             override:
                 - All
-    user: www-data
-    group: www-data
-    default_vhost: true
-    mpm_module: prefork
-    mod_pagespeed: '1'
+            custom_fragment: ''
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_chain: ''
+            ssl_certs_dir: ''
+    mod_pagespeed: 0
     mod_spdy: 0
+nginx:
+    install: 0
+    vhosts:
+        G8KHjZjXKJX0:
+            server_name: awesome.dev
+            server_aliases:
+                - www.awesome.dev
+            www_root: /var/www/awesome.dev
+            listen_port: '80'
+            index_files:
+                - index.html
+                - index.htm
+                - index.php
+            envvars:
+                - 'APP_ENV dev'
 php:
+    install: '1'
     version: '55'
-    composer: '1'
+    composer: 1
     modules:
         php:
             - cli
-            - intl
-            - mcrypt
             - curl
             - gd
             - imagick
-            - sqlite
+            - intl
+            - mcrypt
             - memcached
+            - sqlite
         pear: {  }
         pecl:
             - pecl_http
@@ -110,18 +136,47 @@ xdebug:
         xdebug.remote_enable: '1'
         xdebug.remote_handler: dbgp
         xdebug.remote_port: '9000'
-xhprof:
-    install: '1'
+        xdebug.max_nesting_level: '0'
 drush:
-    install: '1'
+    install: 0
     settings:
         drush.tag_branch: 6.x
+mysql:
+    install: 0
+    root_password: '123'
+    phpmyadmin: 0
+    adminer: 0
+    databases:
+        PeWkTwlQm6kI:
+            grant:
+                - ALL
+            name: dbname
+            host: localhost
+            user: dbuser
+            password: '123'
+            sql_file: ''
+postgresql:
+    install: '1'
+    settings:
+        root_password: root
+        user_group: postgres
+        encoding: UTF8
+        version: '9.3'
+    databases:
+        3WJflMijDgt5:
+            grant: ALL
+            name: framework
+            user: framework
+            password: framework
+            sql_file: ''
+    adminer: 0
 mariadb:
+    install: '1'
     root_password: root
     phpmyadmin: '1'
     adminer: '1'
     databases:
-        4UaYJHMjk6CA:
+        y8Uu9dA42TwI:
             grant:
                 - ALL
             name: framework
@@ -132,9 +187,18 @@ mariadb:
     version: '10.0'
 mongodb:
     install: '1'
-    auth: 1
-    port: '27017'
-    databases: {  }
+    settings:
+        auth: 1
+        port: '27017'
+    databases:
+        whYmtLk1Sffv:
+            name: framework
+            user: framework
+            password: framework
+redis:
+    install: 0
+    settings:
+        conf_port: '6379'
 beanstalkd:
     install: 0
     settings:
@@ -149,5 +213,6 @@ beanstalkd:
     binlogdir: /var/lib/beanstalkd/binlog
 rabbitmq:
     install: 0
-    port: '5672'
+    settings:
+        port: '5672'
 

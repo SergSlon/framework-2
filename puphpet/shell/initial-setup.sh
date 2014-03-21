@@ -22,7 +22,8 @@ if [[ ! -f /.puphpet-stuff/initial-setup-repo-update ]]; then
         echo "Finished running initial-setup apt-get update"
     elif [[ "${OS}" == 'centos' ]]; then
         echo "Running initial-setup yum update"
-        yum update -y >/dev/null
+        yum install yum-plugin-fastestmirror -y >/dev/null
+        yum check-update -y >/dev/null
         echo "Finished running initial-setup yum update"
 
         echo "Updating to Ruby 1.9.3"
@@ -42,7 +43,7 @@ fi
 
 if [[ "${OS}" == 'ubuntu' && ("${CODENAME}" == 'lucid' || "${CODENAME}" == 'precise') && ! -f /.puphpet-stuff/ubuntu-required-libraries ]]; then
     echo 'Installing basic curl packages (Ubuntu only)'
-    apt-get install -y libcurl3 libcurl4-gnutls-dev >/dev/null
+    apt-get install -y libcurl3 libcurl4-gnutls-dev curl >/dev/null
     echo 'Finished installing basic curl packages (Ubuntu only)'
 
     touch /.puphpet-stuff/ubuntu-required-libraries
