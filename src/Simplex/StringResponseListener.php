@@ -11,11 +11,12 @@ class StringResponseListener implements EventSubscriberInterface
     {
         $responseString = $event->getControllerResult();
 
-        // Play with the Response a bit
         $response = new Response();
+        // Play with the Response a bit
         $response->headers->set('Content-Type', 'text/plain');
         $response->setContent($responseString);
 
+        // Setting a Response on the event stops the propagation
         if(is_string($responseString)) {
             $event->setResponse($response);
         }

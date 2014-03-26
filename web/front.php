@@ -2,46 +2,37 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing;
-use Symfony\Component\HttpKernel;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\DependencyInjection\Reference;
+
+/**
+ * SC - Service container (Dependency Injection container)
+ */
+
+// Service container (DI stuff)
+$sc = include __DIR__ . '/../src/container.php';
+// Create a mapping - each URL pattern will be mapped to the page file
+$sc->setParameter('routes', include __DIR__.'/../src/app.php');
 
 // Form the request from all possible sources: $_GET, $_POST, $_FILE, $_COOKIE, $_SESSION
 // TEST with command-line
 //$request = Request::create('/is-leap-year/2015');
 $request = Request::createFromGlobals();
 
-// Create a mapping - each URL pattern will be mapped to the page file
-$routes = include __DIR__ . '/../src/app.php';
+// Custom listener in front controller
+$sc->register('listener.string_response', 'Simplex\StringResponseListener');
+$sc->getDefinition('dispatcher')
+    ->addMethodCall('addSubscriber', [new Reference('listener.string_response')]);
 
-// Context is needed to enforce method requirements
-$context = new Routing\RequestContext();
+// Setting a parameters via ServiceContainer
+$sc->setParameter('debug', true);
+echo $sc->getParameter('debug');
+$sc->setParameter('charset', 'UTF-777');
 
-// Create a Url Matcher that will take URL paths and convert them to the internal routes
-$matcher = new Routing\Matcher\UrlMatcher($routes, $context);
+/** End of SC - Service Container */
 
-// The resolver will take care of the lazy loading of our controller classes
-$resolver = new HttpKernel\Controller\ControllerResolver();
 
-// Subscribe to a couple of events with the EventDispatcher Component
-$dispatcher = new EventDispatcher();
-$dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher));
-
-// Introducing ExceptionListener to handle 404's and 500's
-$dispatcher->addSubscriber(new HttpKernel\EventListener\ExceptionListener('Calendar\\Controller\ErrorController::exceptionAction'));
-
-// Register the plain text response listener
-$dispatcher->addSubscriber(new Simplex\StringResponseListener());
-
-$framework = new Simplex\Framework($dispatcher, $resolver);
-
-$response = $framework->handle($request);
-$dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
+$response = $sc->get('framework')->handle($request);
 
 // TEST with command-line
 //echo $response;
 $response->send();
-
-
-
-
